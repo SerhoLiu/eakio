@@ -6,6 +6,7 @@ use rpassword;
 use docopt::Docopt;
 use walkdir::{DirEntry, WalkDir};
 
+use super::VERSION;
 use super::util::io_error;
 use super::task::{Mode, Task, TaskRuner};
 
@@ -36,6 +37,7 @@ struct Args {
     flag_hidden: bool,
     flag_dryrun: bool,
     flag_parallel: i32,
+    flag_version: bool,
     arg_src: Vec<String>,
     arg_dest: String,
     cmd_encrypt: bool,
@@ -47,14 +49,21 @@ pub fn command() -> io::Result<()> {
         .and_then(|d| d.deserialize())
         .unwrap_or_else(|e| e.exit());
 
-    command_crypt(&args)
+    if args.flag_version {
+        println!("{}", VERSION);
+        Ok(())
+    } else {
+        command_crypt(&args)
+    }
 }
 
 fn command_crypt(args: &Args) -> io::Result<()> {
     let mode = if args.cmd_encrypt {
         Mode::Encrypt
-    } else {
+    } else if args.cmd_decrypt {
         Mode::Decrypt
+    } else {
+        return Err(io_error("only support encrypt and decrypt"));
     };
 
     let dest_is_dir = args.arg_dest.ends_with(MAIN_SEPARATOR);
