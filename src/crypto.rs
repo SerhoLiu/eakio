@@ -5,10 +5,8 @@ use std::result;
 use ring::{aead, digest, hkdf, hmac};
 use ring::rand::{SecureRandom, SystemRandom};
 
-
 static CIPHER: &'static aead::Algorithm = &aead::AES_256_GCM;
 static DIGEST: &'static digest::Algorithm = &digest::SHA256;
-
 
 pub type Result<T> = result::Result<T, Error>;
 
@@ -27,7 +25,6 @@ pub struct Salt {
     len: usize,
     bytes: [u8; digest::MAX_OUTPUT_LEN],
 }
-
 
 impl Salt {
     pub fn new() -> Result<Salt> {
@@ -67,7 +64,6 @@ impl Salt {
         hmac::SigningKey::new(DIGEST, &self.bytes[..self.len])
     }
 }
-
 
 const INFO_KEY: &str = "hello kelsi";
 
@@ -187,7 +183,6 @@ impl From<Error> for io::Error {
         io::Error::new(io::ErrorKind::Other, format!("{}", err))
     }
 }
-
 
 #[cfg(test)]
 mod test {

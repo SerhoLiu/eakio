@@ -1,4 +1,5 @@
 extern crate ansi_term;
+extern crate byteorder;
 extern crate crossbeam;
 extern crate docopt;
 extern crate env_logger;
@@ -19,11 +20,6 @@ mod file;
 mod task;
 mod util;
 mod cli;
-
-mod v1 {
-    pub const VERSION: u8 = 0x01;
-    pub const MAGIC: &[u8] = b"KELSI";
-}
 
 pub use cli::command;
 pub use util::init_logger;

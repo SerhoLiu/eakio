@@ -1,16 +1,15 @@
-use std::io;
-use std::fs;
 use std::fmt;
+use std::fs;
+use std::io;
+use std::path::PathBuf;
 use std::result;
 use std::sync::Arc;
-use std::path::PathBuf;
 
+use crossbeam::sync::MsQueue;
 use num_cpus;
 use scoped_threadpool;
-use crossbeam::sync::MsQueue;
 
 use super::file::FileCrypt;
-
 
 type Result<T> = result::Result<T, Error>;
 

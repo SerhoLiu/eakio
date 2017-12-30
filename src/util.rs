@@ -1,12 +1,11 @@
-use std::io;
 use std::env;
 use std::fmt;
+use std::io;
 
 use ansi_term::Color;
 use env_logger::LogBuilder;
 use log::{LogLevel, LogLevelFilter, LogRecord};
 use time;
-
 
 struct ColorLevel(LogLevel);
 

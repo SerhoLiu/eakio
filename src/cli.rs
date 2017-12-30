@@ -1,15 +1,14 @@
 use std::io;
 use std::path::{PathBuf, MAIN_SEPARATOR};
 
+use docopt::Docopt;
 use glob;
 use rpassword;
-use docopt::Docopt;
 use walkdir::{DirEntry, WalkDir};
 
 use super::VERSION;
-use super::util::io_error;
 use super::task::{Mode, Task, TaskRuner};
-
+use super::util::io_error;
 
 const USAGE: &str = "
 Eakio, encrypt your file.
@@ -104,7 +103,6 @@ fn command_crypt(args: &Args) -> io::Result<()> {
     Ok(())
 }
 
-
 #[derive(Debug)]
 struct PathGroup {
     path: PathBuf,
@@ -116,7 +114,7 @@ fn is_hidden(entry: &DirEntry) -> bool {
     entry
         .file_name()
         .to_str()
-        .map(|s| s.starts_with("."))
+        .map(|s| s.starts_with('.'))
         .unwrap_or(false)
 }
 
