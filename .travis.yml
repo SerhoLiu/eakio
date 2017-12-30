@@ -59,7 +59,7 @@ deploy:
   # - encrypt it using: `travis encrypt API_KEY_HERE`
   # - paste the output below
   api_key:
-    secure: "AHTNyvVVyGgPVUtNfcKqGJUVHfLiFxXwFU/A9OFcKD9xdVHS9zXhZ4eg6rYVVkVLa8yBrD3gAQ1YYh5qz7EChRFpU2TgCecoV/fPelTX96GAbJEWo65FpxcVJ7mEXeyVs+C93mj4FS8H8iI+6YkVcJ4vUsOxeJTKj/p1+XKODCs="
+    secure: "p3pdxh8i8aUahPAKwWen81LO1Ryn1Vo8wqVYxsFByLkmczSmPmreD1DMDBjnPSx6m/Gz9hGXZ1XNervDse7OL/aqof3Pg1phpPo7iLdMKl4CNecttY78PnUChkqylnro/mAnhxJYj0IV6UPZZ9wWzhCeazEC8UPpxYblq/RxUMkcEJE3D4+FXz6JvKYk1T9OprPt7E7fEBxd5uayOWcb3YEYqle82dQWhSta5G/YxuAo1t5HOsAH5rKmVsEn+iJc1xD28fSOg+aYwZaHk0VoCsHV0/5i6X6apAvGoP4Y2/JWb+6XaqX9naXJY+/bq/+3JXLSz61MmAUH38SkybxlrziLrQbadOXuJLcrNqlGhdpmOSmvEl0xo+QcyTlKo9yddscDOM1sLJOssywT/+8UEvMrw3FZ+eCb2BU4tPCcOZrNl3/lSvlA0DB8HRK/N+9YMGoGlePeXfqIFUnguunDPHz7J5/L2X3/tEg5ZKhCkOcItt/a1EgsFcpz3Y52KocgfCAt8OW3c/LVeAp1pPZpwHcEFmXl9JMK2i6XwXnDDNJrHO0DSLxhBeehnIdD3b0twiAH++x1EsK1hQeQnpDoltjkO3ycrt0eG87uVb8Tm8szdor+2Hv1Rv205W4x/5U3cVNfvKi+iE/loKiPCVWpx/YTgJ8sFPMxD8JLTi01BdM="
   # for uploading multiple files
   file_glob: true
   # NOTE explanation on each env variable
