@@ -63,10 +63,11 @@ deploy:
 branches:
   only:
     - master
+    # appveyor or github bug? if no develop, tag push build not run
     - develop
     # IMPORTANT Regex to match tags. Required, or appveyor may not trigger deploys when a new tag
     # is pushed. This regex matches semantic versions like v1.2.3-rc4+2016.02.22
-    - /v\d+.*/
+    - /^v\d+\.\d+.*$/
 
 # Disable caching, for now
 #cache:
