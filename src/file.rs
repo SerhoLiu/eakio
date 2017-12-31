@@ -167,7 +167,7 @@ impl<'a> FileCrypt<'a> {
 // calc crypto in_size data out size
 fn crypto_data_size(in_size: usize) -> usize {
     let nblock = if in_size == 0 {
-        0
+        1
     } else {
         (in_size - 1) / BLOCK_SIZE + 1
     };
@@ -175,4 +175,40 @@ fn crypto_data_size(in_size: usize) -> usize {
     let tag_size = nblock * Crypto::tag_len();
 
     in_size + tag_size
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn test_crypto_data_size() {
+        let salt = Salt::new().unwrap();
+        let mut crypto = Crypto::new(&[0u8; 16], &salt).unwrap();
+
+        let mut buf = [0u8; BLOCK_SIZE * 2];
+
+        // in size = 0
+        let in_size = 0;
+        let out_size = crypto.encrypt(&mut buf[..], in_size).unwrap();
+        assert_eq!(out_size, crypto_data_size(in_size));
+
+        // in size < BLOCK_SIZE
+        let in_size1 = BLOCK_SIZE - 3;
+        let out_size1 = crypto.encrypt(&mut buf[..], in_size1).unwrap();
+        assert_eq!(out_size1, crypto_data_size(in_size1));
+
+        // in size = BLOCK_SIZE
+        let in_size2 = BLOCK_SIZE;
+        let out_size2 = crypto.encrypt(&mut buf[..], in_size2).unwrap();
+        assert_eq!(out_size2, crypto_data_size(in_size2));
+
+        // BLOCK_SIZE < in size < 2 * BLOCK_SIZE
+        let in_size3 = in_size1 + in_size2;
+        assert_eq!(out_size1 + out_size2, crypto_data_size(in_size3));
+
+        // in size = n * BLOCK_SIZE
+        let in_size4 = 7 * in_size2;
+        assert_eq!(7 * out_size2, crypto_data_size(in_size4));
+    }
 }

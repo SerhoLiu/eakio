@@ -10,7 +10,7 @@ static DIGEST: &'static digest::Algorithm = &digest::SHA256;
 
 pub type Result<T> = result::Result<T, Error>;
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum Error {
     GenSalt,
     SaltLenNotMatch(usize),
@@ -186,6 +186,7 @@ impl From<Error> for io::Error {
 
 #[cfg(test)]
 mod test {
+    use super::{Crypto, Error, Salt};
 
     #[test]
     fn test_incr_nonce() {
@@ -196,5 +197,70 @@ mod test {
                 + ((nonce[3] as usize) << 24);
             assert_eq!(x, i);
         }
+    }
+
+    #[test]
+    fn test_crypto_normal() {
+        let salt = Salt::new().unwrap();
+        let mut crypto = Crypto::new(&[0u8; 8], &salt).unwrap();
+
+        let mut buf = [0u8; 128];
+        let plain_len: usize = 24;
+
+        let out_len = crypto.encrypt(&mut buf[..], plain_len).unwrap();
+        assert_eq!(out_len, plain_len + Crypto::tag_len());
+        assert!(buf[out_len..].iter().all(|&x| x == 0));
+
+        let len = crypto.decrypt(&mut buf[..out_len]).unwrap();
+        assert_eq!(plain_len, len);
+        assert!(buf[..plain_len].iter().all(|&x| x == 0));
+    }
+
+    #[test]
+    fn test_crypto_zerosize() {
+        let salt = Salt::new().unwrap();
+        let mut crypto = Crypto::new(&[0u8; 8], &salt).unwrap();
+
+        let mut buf = [0u8; 128];
+
+        // test 0 size buf
+        let out_len = crypto.encrypt(&mut buf[..], 0).unwrap();
+        assert_eq!(out_len, 0 + Crypto::tag_len());
+
+        let len = crypto.decrypt(&mut buf[..out_len]).unwrap();
+        assert_eq!(0, len);
+    }
+
+    #[test]
+    fn test_crypto_multi_buf() {
+        let salt = Salt::new().unwrap();
+        let mut crypto = Crypto::new(&[0u8; 8], &salt).unwrap();
+
+        let mut buf1 = [0u8; 128];
+        let plain_len1: usize = 24;
+
+        let mut buf2 = [1u8; 128];
+        let plain_len2: usize = 37;
+
+        crypto.encrypt(&mut buf1[..], plain_len1).unwrap();
+        let out_len2 = crypto.encrypt(&mut buf2[..], plain_len2).unwrap();
+
+        let err = crypto.decrypt(&mut buf2[..out_len2]).unwrap_err();
+        assert_eq!(err, Error::Open);
+
+        let mut crypto1 = Crypto::new(&[0u8; 8], &salt).unwrap();
+        let mut buf3 = [0u8; 128];
+        let plain_len3: usize = 24;
+        let mut buf4 = [2u8; 128];
+        let plain_len4: usize = 24;
+
+        let out_len3 = crypto1.encrypt(&mut buf3[..], plain_len3).unwrap();
+        let out_len4 = crypto1.encrypt(&mut buf4[..], plain_len4).unwrap();
+
+        crypto1.decrypt(&mut buf3[..out_len3]).unwrap();
+        assert!(buf3[..plain_len3].iter().all(|&x| x == 0));
+
+        crypto1.decrypt(&mut buf4[..out_len4]).unwrap();
+        assert!(buf4[..plain_len4].iter().all(|&x| x == 2));
     }
 }
