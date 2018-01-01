@@ -8,7 +8,7 @@ use walkdir::{DirEntry, WalkDir};
 
 use super::VERSION;
 use super::task::{Mode, Task, TaskRuner};
-use super::util::io_error;
+use super::util::{expand_tilde_path, io_error};
 
 const USAGE: &str = "
 Eakio, encrypt your file.
@@ -121,7 +121,8 @@ fn is_hidden(entry: &DirEntry) -> bool {
 fn list_src_files(srcs: &[String], hidden: bool) -> io::Result<Vec<PathGroup>> {
     let mut globs = Vec::<PathBuf>::new();
     for src in srcs.iter() {
-        let paths = glob::glob(src).map_err(|e| io_error(&format!("{}", e)))?;
+        let expand_src = expand_tilde_path(src);
+        let paths = glob::glob(&expand_src).map_err(|e| io_error(&format!("{}", e)))?;
         for entry in paths {
             let path = entry.map_err(|e| io_error(&format!("{}", e)))?;
             globs.push(path);
