@@ -24,4 +24,4 @@ mod cli;
 pub use cli::command;
 pub use util::init_logger;
 
-pub const VERSION: &str = " 1.0-beta";
+pub const VERSION: &str = "1.0";
