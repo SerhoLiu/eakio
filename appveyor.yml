@@ -62,6 +62,7 @@ deploy:
 
 branches:
   only:
+    - master
     # appveyor or github bug? if no develop, tag push build not run
     - develop
     # IMPORTANT Regex to match tags. Required, or appveyor may not trigger deploys when a new tag
